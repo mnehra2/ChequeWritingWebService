@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="ChequeWritingServiceDetails.ChequeWritingService" CodeBehind="ChequeWritingService.svc.cs" %>

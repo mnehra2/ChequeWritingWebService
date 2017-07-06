@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit http://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>C:\inetpub\wwwroot\service</_PublishTargetUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="bin/ChequeWritingServiceDetails.dll">
+      <publishTime>06/07/2017 10:37:54</publishTime>
+    </File>
+    <File Include="bin/ChequeWritingServiceInterface.dll">
+      <publishTime>07/05/2017 16:35:56</publishTime>
+    </File>
+    <File Include="bin/ChequeWritingUtilities.dll">
+      <publishTime>06/07/2017 10:37:53</publishTime>
+    </File>
+    <File Include="ChequeWritingService.svc">
+      <publishTime>07/05/2017 13:37:00</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>07/06/2017 10:54:42</publishTime>
+    </File>
+  </ItemGroup>
+</Project>
