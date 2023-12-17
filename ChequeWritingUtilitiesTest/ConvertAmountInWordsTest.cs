@@ -11,7 +11,7 @@ namespace ChequeWritingUtilitiesTest
         public void GetWordsFromAmount_ReturnsStringInWords()
         {
             // Arrange         
-            decimal amount = 144.20M;
+            decimal amount = 143.20M;
 
             //Act
             var model = new ConvertAmountInWords();
