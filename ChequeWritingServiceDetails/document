@@ -1,0 +1,372 @@
+ABLIS REST API Error Code Catalogue and Governance 
+
+This document defines the recommended ABLIS error code catalogue and governance model for REST APIs replacing SOAP Faults. 
+
+Error Code Governance 
+
+Governance Area 
+
+Rule 
+
+Ownership 
+
+ABLIS 
+
+Code Stability 
+
+Published codes must never be reused or repurposed 
+
+Versioning 
+
+New codes may be added; existing meanings remain unchanged 
+
+Documentation 
+
+All codes documented in APIM Developer Portal and OpenAPI 
+
+Consumer Impact 
+
+Breaking changes require governance approval 
+
+Observability 
+
+Every error must include CorrelationId 
+
+Retry Guidance 
+
+Every error mapped to RetryClassification 
+
+Validation (1000 Series) 
+
+ABLIS-1001 Mandatory field missing 
+
+ABLIS-1002 XML schema validation failed 
+
+ABLIS-1003 Invalid field value 
+
+ABLIS-1005 Record validation failed 
+
+Security (2000 Series) 
+
+ABLIS-2001 Authentication failed 
+
+ABLIS-2002 Authorisation failed 
+
+ABLIS-2003 Invalid subscription key 
+
+ABLIS-2004 Subscription disabled 
+
+ABLIS-2005 Client certificate validation failed 
+
+ABLIS-2006 Client certificate expired 
+
+ABLIS-2007 Client certificate not trusted 
+
+ABLIS-2008 Client certificate revoked 
+
+ABLIS-2009 Client certificate subject mismatch 
+
+ABLIS-2010 Mutual TLS certificate required 
+
+Resource/Data (3000 Series) 
+
+ABLIS-3001 Record not found 
+
+ABLIS-3002 Record already exists 
+
+ABLIS-3003 Version conflict 
+
+Business Rule (4000 Series) 
+
+ABLIS-4001 Business rule violation 
+
+ABLIS-4006 Content approval required 
+
+API Governance (5000 Series) 
+
+ABLIS-5001 Rate limit exceeded 
+
+ABLIS-5002 Quota exceeded 
+
+Dependency (6000 Series) 
+
+ABLIS-6001 Sitecore unavailable 
+
+ABLIS-6002 Coveo unavailable 
+
+ABLIS-6003 Service Bus unavailable 
+
+ABLIS-6004 Database unavailable 
+
+Processing (7000 Series) 
+
+ABLIS-7003 Partial batch failure 
+
+Internal (9000 Series) 
+
+ABLIS-9000 Unexpected error 
+
+ABLIS-9001 Configuration error 
+
+ 
+
+Error Response Examples 
+
+XML Example - Validation Error 
+<ErrorResponse> 
+
+<Code>ABLIS-1001</Code> 
+
+<Category>Validation</Category> 
+
+<Message>Mandatory field LicenceNumber is missing.</Message> 
+
+</ErrorResponse> 
+ 
+JSON Example - Validation Error 
+{"code":"ABLIS-1001","category":"Validation","message":"Mandatory field LicenceNumber is missing."} 
+ 
+XML Example - Authentication Failure 
+<ErrorResponse> 
+
+<Code>ABLIS-2001</Code> 
+
+<Category>Authentication</Category> 
+
+<Message>Authentication failed.</Message> 
+
+</ErrorResponse> 
+ 
+JSON Example - Authentication Failure 
+{"code":"ABLIS-2001","category":"Authentication","message":"Authentication failed."} 
+ 
+XML Example - Business Rule Violation 
+<ErrorResponse> 
+
+<Code>ABLIS-4006</Code> 
+
+<Category>BusinessRule</Category> 
+
+<Message>Content item must complete Sitecore approval workflow before publication.</Message> 
+
+</ErrorResponse> 
+ 
+JSON Example - Business Rule Violation 
+{"code":"ABLIS-4006","category":"BusinessRule","message":"Content item must complete Sitecore approval workflow before publication."} 
+ 
+XML Example - Dependency Failure 
+<ErrorResponse> 
+
+<Code>ABLIS-6002</Code> 
+
+<Category>Dependency</Category> 
+
+<Message>Search indexing service unavailable.</Message> 
+
+</ErrorResponse> 
+ 
+JSON Example - Dependency Failure 
+{"code":"ABLIS-6002","category":"Dependency","message":"Search indexing service unavailable."} 
+ 
+XML Example - Rate Limiting 
+<ErrorResponse> 
+
+<Code>ABLIS-5001</Code> 
+
+<Category>RateLimit</Category> 
+
+<Message>Rate limit exceeded.</Message> 
+
+</ErrorResponse> 
+ 
+JSON Example - Rate Limiting 
+{"code":"ABLIS-5001","category":"RateLimit","message":"Rate limit exceeded."} 
+ 
+
+ 
+
+Error Handling and Retry Guidance 
+
+Provide consistent client behaviour for handling ABLIS REST API errors and implementing safe retry logic. 
+
+HTTP Status 
+
+Example Code 
+
+Retry Classification 
+
+Consumer Action 
+
+400 
+
+ABLIS-1001 
+
+NoRetry 
+
+Correct request and resubmit 
+
+401 
+
+ABLIS-2001 
+
+NoRetry 
+
+Obtain valid API Key/Certificate 
+
+403 
+
+ABLIS-2002 
+
+NoRetry 
+
+Request appropriate access 
+
+404 
+
+ABLIS-3001 
+
+NoRetry 
+
+Verify resource identifier 
+
+409 
+
+ABLIS-3003 
+
+NoRetry 
+
+Refresh state and resolve conflict 
+
+429 
+
+ABLIS-5001 
+
+RetryAfterDelay 
+
+Honor Retry-After header 
+
+503 
+
+ABLIS-6001 
+
+RetryWithBackoff 
+
+Use exponential backoff 
+
+500 
+
+ABLIS-9000 
+
+ContactSupport 
+
+Capture CorrelationId and contact support 
+
+Recommended Retry Policy 
+
+Initial retry after 5 seconds, then exponential backoff (10, 20, 40, 80 seconds) with a maximum of 5 attempts. 
+
+Do Not Retry Conditions 
+
+Do not retry NoRetry responses including validation, authentication, authorisation and business rule errors. 
+
+Correlation ID Handling 
+
+Always log CorrelationId and provide it when raising support tickets. 
+
+Bulk Processing Guidance 
+
+For partial failures, remediate and resubmit only failed items rather than the entire batch.
+ 
+ 
+
+Consumer Implementation Checklist 
+
+Stenning Onboarding 
+
+Register Developer Portal account 
+
+Obtain subscription keys and credentials 
+
+Map Client Certificates 
+
+Verify connectivity to all environments 
+
+Request Construction 
+
+Include required headers 
+
+Use supported API version 
+
+Validate XML/JSON payloads before submission 
+
+Response Handling 
+
+Process HTTP status codes first 
+
+Parse ABLIS error payloads 
+
+Handle partial success responses 
+
+Correlation ID Logging 
+
+Capture CorrelationId for every request 
+
+Include CorrelationId in support requests 
+
+Retry Implementation 
+
+Implement RetryAfterDelay and RetryWithBackoff 
+
+Honor Retry-After header 
+
+Apply exponential backoff with jitter 
+
+Do not retry NoRetry responses 
+
+Partial Batch Processing 
+
+Process successful records 
+
+Resubmit failed records only after remediation 
+
+Idempotency 
+
+Use X-Request-Id header for duplicate detection and safe retries 
+
+Monitoring and Alerting 
+
+Monitor request volume, failures and retries 
+
+Generate alerts for repeated failures 
+
+Security Compliance 
+
+Store secrets in secure vaults 
+
+Perform regular credential rotation 
+
+Operational Support Readiness 
+
+Maintain runbooks and error code mappings 
+
+Train support teams on correlation IDs and escalation paths 
+
+Go-Live Readiness Checklist 
+
+Successful authentication 
+
+Error response parsing 
+
+CorrelationId logging 
+
+Retry handling implemented 
+
+Partial batch failure handling 
+
+Monitoring configured 
+
+Secure credential management 
+
+Operational procedures documented 
+
+ 
